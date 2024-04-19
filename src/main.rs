@@ -1,5 +1,5 @@
-mod cli;
 mod board;
+mod cli;
 
 use cli::*;
 
@@ -13,4 +13,3 @@ fn main() {
         eprintln!("Error: {}", e);
     }
 }
-
