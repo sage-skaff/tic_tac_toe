@@ -1,5 +1,6 @@
 mod board;
 mod cli;
+mod game;
 
 use cli::*;
 

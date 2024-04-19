@@ -59,6 +59,25 @@ mod tests {
     use super::*;
 
     #[test]
+    fn board_initializes_empty() {
+        let board = Board::new();
+        for row in board.grid.iter() {
+            for &cell in row {
+                assert_eq!(cell, Piece::Empty);
+            }
+        }
+    }
+
+    #[test]
+    fn placing_pieces_on_board() {
+        let mut board = Board::new();
+        assert_eq!(board.grid[0][0], Piece::Empty); // Ensure initial state is empty
+        
+        board.place_piece(0, 0, Piece::X).unwrap();
+        assert_eq!(board.grid[0][0], Piece::X); // Check if piece was placed
+    }
+
+    #[test]
     fn test_new_board() {
         let board = Board::new();
         let expected = "  |   |  \n---------\n  |   |  \n---------\n  |   |  ";
