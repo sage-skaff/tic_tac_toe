@@ -1,12 +1,15 @@
 mod cli;
 
-use cli::display;
+use cli::*;
 
-use std::io::{self, BufReader};
+use std::io::{self};
+
 fn main() {
-    let stdin = io::stdin();
-    let input_source = BufReader::new(stdin.lock());
-    let output_sink = io::stdout();
+    let input = io::BufReader::new(io::stdin().lock());
+    let output = io::stdout();
 
-    display(input_source, output_sink);
+    if let Err(e) = start_game_interface(input, output) {
+        eprintln!("Error: {}", e);
+    }
 }
+
