@@ -1,3 +1,5 @@
+// Path: src/cli.rs
+
 use std::io::{self, Write, BufRead};
 use std::fmt;
 
