@@ -1,6 +1,6 @@
 // Path: src/cli.rs
 
-use crate::board::Board;
+use crate::game::Game;
 use std::fmt;
 use std::io::{self, BufRead, Write};
 
@@ -43,26 +43,42 @@ impl fmt::Display for Command {
     }
 }
 
-pub fn start_game_interface<I, O>(input_source: I, mut output_sink: O) -> io::Result<()>
+pub fn start_game_interface<I, O>(mut input_source: I, mut output_sink: O) -> io::Result<()>
 where
     I: BufRead,
     O: Write,
 {
     writeln!(output_sink, "{}", HELP_MESSAGE)?;
-    let board = Board::new(); // Initialize the game board
 
-    for command_line in input_source.lines() {
-        let command_line = command_line?;
+    let mut game = Game::new(); // Initialize the game
+    let mut lines = input_source.lines(); // Create the lines iterator once
+
+    while let Some(Ok(command_line)) = lines.next() {
         let command = Command::from(command_line.as_str());
 
         match command {
             Command::Play => {
-                writeln!(output_sink, "{}", board.get_board_state())?;
-            }
+                writeln!(output_sink, "{}", game.board.get_board_state())?;
+                writeln!(output_sink, "Enter your move (row, col):")?;
+                if let Some(Ok(line)) = lines.next() {
+                    let coords: Vec<usize> = line
+                        .split(',')
+                        .filter_map(|x| x.trim().parse().ok())
+                        .collect();
+                    if coords.len() == 2 {
+                        if let Err(e) = game.play_move(coords[0], coords[1]) {
+                            writeln!(output_sink, "Error: {}", e)?;
+                        }
+                        writeln!(output_sink, "{}", game.board.get_board_state())?;
+                    } else {
+                        writeln!(output_sink, "Invalid input. Please enter row, col")?;
+                    }
+                }
+            },
             Command::Exit => {
                 writeln!(output_sink, "{}", command)?;
                 break;
-            }
+            },
             _ => {
                 writeln!(output_sink, "{}", command)?;
             }

@@ -8,7 +8,7 @@ pub enum Piece {
 }
 
 pub struct Board {
-    grid: [[Piece; 3]; 3],
+    pub grid: [[Piece; 3]; 3],
 }
 
 impl Board {
